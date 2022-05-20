@@ -64,7 +64,6 @@ mod tests {
 
     use super::NetworkManagerSettingsProxy;
 
-
     #[tokio::test]
     async fn test_list_connections() {
         let proxy = get_proxy()
