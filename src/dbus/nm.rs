@@ -10,7 +10,6 @@ use zvariant::{OwnedObjectPath, ObjectPath, OwnedValue, Value, Type};
     default_path = "/org/freedesktop/NetworkManager"
 )]
 pub trait NetworkManager {
-
     fn reload(&self, flags: u32) -> zbus::Result<()>;
     
     fn get_devices(&self) -> zbus::Result<Vec<OwnedObjectPath>>;
