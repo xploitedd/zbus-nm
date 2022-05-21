@@ -5,7 +5,7 @@ use zvariant::{Value, OwnedValue};
 
 #[dbus_proxy(
     default_service = "org.freedesktop.NetworkManager",
-    interface = "org.freedesktop.NetworkManager.Settings.Connection",
+    interface = "org.freedesktop.NetworkManager.Settings.Connection"
 )]
 pub trait NetworkManagerConnection {
     fn update(&self, properties: HashMap<&str, HashMap<&str, &Value<'_>>>) -> zbus::Result<()>;
