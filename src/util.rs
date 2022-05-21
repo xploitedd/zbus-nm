@@ -9,3 +9,16 @@ impl <T> ToErrString<T> for zbus::Result<T> {
         self.or_else(|err| Err(err.to_string()))
     }
 }
+
+pub trait ToOption<T> {
+    fn to_option(self) -> Option<T>;
+}
+
+impl <T> ToOption<T> for Result<T> {
+    fn to_option(self) -> Option<T> {
+        match self {
+            Ok(value) => Some(value),
+            _ => None
+        }
+    }
+}

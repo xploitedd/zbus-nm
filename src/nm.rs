@@ -125,6 +125,8 @@ mod tests {
                 }
             })
             .unwrap();
+
+        println!("{:?}", wifi_device.get_access_points().await?);
             
         Ok(())
     }
