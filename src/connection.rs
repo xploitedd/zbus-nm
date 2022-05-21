@@ -3,7 +3,7 @@ use std::sync::Arc;
 use zbus::Connection as ZConnection;
 use zvariant::OwnedObjectPath;
 
-use crate::{dbus::{nm_connection::NetworkManagerConnectionProxy, nm::NetworkManagerProxy}, util::{Result, ToErrString}};
+use crate::{dbus::{nm::NetworkManagerProxy, connection::nm_connection::NetworkManagerConnectionProxy}, util::{Result, ToErrString}};
 
 pub struct Connection {
     path: OwnedObjectPath,

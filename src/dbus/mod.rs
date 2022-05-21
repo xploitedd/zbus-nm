@@ -1,8 +1,8 @@
 pub mod nm;
 pub mod nm_settings;
-pub mod nm_connection;
 pub mod nm_access_point;
 pub mod device;
+pub mod connection;
 
 bitflags::bitflags! {
     pub struct NmReloadFlags : u32 {
