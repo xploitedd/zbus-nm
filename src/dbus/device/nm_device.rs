@@ -121,6 +121,6 @@ pub trait NetworkManagerDevice {
 
 #[derive(Debug, Serialize, Deserialize, Type)]
 pub struct GetAppliedConnectionResponse {
-    connection: HashMap<String, HashMap<String, OwnedValue>>,
-    version_id: u64
+    pub connection: HashMap<String, HashMap<String, OwnedValue>>,
+    pub version_id: u64
 }

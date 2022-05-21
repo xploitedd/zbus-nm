@@ -48,14 +48,14 @@ pub trait NetworkManagerSettings {
 
 #[derive(Debug, Serialize, Deserialize, Type)]
 pub struct AddConnection2Result {
-    path: OwnedObjectPath,
-    result: HashMap<String, OwnedValue>
+    pub path: OwnedObjectPath,
+    pub result: HashMap<String, OwnedValue>
 }
 
 #[derive(Debug, Serialize, Deserialize, Type)]
 pub struct LoadConnectionsResult {
-    status: bool,
-    failures: Vec<String>
+    pub status: bool,
+    pub failures: Vec<String>
 }
 
 #[cfg(test)]

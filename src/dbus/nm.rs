@@ -146,14 +146,14 @@ pub trait NetworkManager {
 
 #[derive(Debug, Serialize, Deserialize, Type)]
 pub struct AddActivateResponse {
-    path: OwnedObjectPath,
-    active_connection: OwnedObjectPath
+    pub path: OwnedObjectPath,
+    pub active_connection: OwnedObjectPath
 }
 
 #[derive(Debug, Serialize, Deserialize, Type)]
 pub struct GetLoggingResponse {
-    level: String,
-    domains: String
+    pub level: String,
+    pub domains: String
 }
 
 #[cfg(test)]
