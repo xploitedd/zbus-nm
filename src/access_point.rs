@@ -5,6 +5,21 @@ use zvariant::OwnedObjectPath;
 
 use crate::{dbus::{nm::NetworkManagerProxy, nm_access_point::NetworkManagerAccessPointProxy}, util::{Result, ToErrString}, device::wifi::WifiDevice};
 
+pub struct Ssid {
+    ssid: Vec<u8>
+}
+
+impl Ssid {
+    fn new(ssid: Vec<u8>) -> Self {
+        Self { ssid }
+    }
+
+    pub fn to_string(self) -> Result<String> {
+        String::from_utf8(self.ssid)
+            .to_err_string()
+    }
+}
+
 pub struct AccessPoint {
     pub(crate) path: OwnedObjectPath,
     pub(crate) conn: Arc<ZConnection>,
@@ -33,8 +48,16 @@ impl AccessPoint {
         })
     }
 
-    pub fn connect(&self, wifi_device: &WifiDevice) {
+    pub async fn connect(&self, wifi_device: &WifiDevice) {
 
+    }
+
+    pub async fn get_ssid(&self) -> Result<Ssid> {
+        let ssid = self.ap_proxy.ssid()
+            .await
+            .to_err_string()?;
+
+        Ok(Ssid::new(ssid))
     }
 }
 

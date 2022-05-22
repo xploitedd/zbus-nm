@@ -3,7 +3,7 @@ use std::sync::Arc;
 use futures::future;
 use zbus::Connection as ZConnection;
 
-use crate::{dbus::{nm::NetworkManagerProxy, nm_settings::NetworkManagerSettingsProxy}, connection::Connection, device::device::{Device, DeviceType}, util::{Result, ToErrString}};
+use crate::{dbus::{nm::NetworkManagerProxy, nm_settings::NetworkManagerSettingsProxy}, connection::Connection, device::device::{Device, DeviceType}, util::{Result, ToErrString, ToOption}};
 
 pub struct NetworkManager {
     conn: Arc<ZConnection>,
@@ -46,12 +46,7 @@ impl NetworkManager {
         let devices: Vec<_> = future::join_all(ft_dev)
             .await
             .into_iter()
-            .filter_map(|d| {
-                match d {
-                    Ok(value) => Some(value),
-                    Err(_) => None
-                }
-            })
+            .filter_map(|d| d.to_option())
             .collect();
 
         Ok(devices)
@@ -66,12 +61,7 @@ impl NetworkManager {
         let devices: Vec<_> = future::join_all(devices_ft)
             .await
             .into_iter()
-            .filter_map(|d| {
-                match d {
-                    Ok(value) => Some(value),
-                    Err(_) => None
-                }
-            })
+            .filter_map(|d| d.to_option())
             .collect();
 
         Ok(devices)
@@ -91,12 +81,7 @@ impl NetworkManager {
         let connections: Vec<_> = future::join_all(ft_conn)
             .await
             .into_iter()
-            .filter_map(|c| {
-                match c {
-                    Ok(value) => Some(value),
-                    Err(_) => None
-                }
-            })
+            .filter_map(|c| c.to_option())
             .collect();
 
         Ok(connections)
@@ -126,7 +111,10 @@ mod tests {
             })
             .unwrap();
 
-        println!("{:?}", wifi_device.get_access_points().await?);
+        let aps = wifi_device.get_access_points().await?;
+        for ap in aps {
+            println!("{:?}", ap.get_ssid().await?.to_string().unwrap())
+        }
             
         Ok(())
     }
