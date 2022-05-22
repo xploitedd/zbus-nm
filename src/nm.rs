@@ -1,9 +1,30 @@
 use std::sync::Arc;
 
-use futures::future;
+use futures::{future, StreamExt};
 use zbus::Connection as ZConnection;
 
 use crate::{dbus::{nm::NetworkManagerProxy, nm_settings::NetworkManagerSettingsProxy}, connection::Connection, device::device::{Device, DeviceType}, util::{Result, ToErrString, ToOption}};
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub enum Connectivity {
+    UNKNOWN,
+    NONE,
+    PORTAL,
+    LIMITED,
+    FULL
+}
+
+impl From<u32> for Connectivity {
+    fn from(flag: u32) -> Self {
+        match flag {
+            1 => Connectivity::NONE,
+            2 => Connectivity::PORTAL,
+            3 => Connectivity::LIMITED,
+            4 => Connectivity::FULL,
+            _ => Connectivity::UNKNOWN
+        }
+    }
+}
 
 pub struct NetworkManager {
     conn: Arc<ZConnection>,
@@ -85,6 +106,36 @@ impl NetworkManager {
             .collect();
 
         Ok(connections)
+    }
+
+    pub async fn get_connectivity(&self) -> Result<Connectivity> {
+        let connectivity = self.nm_proxy.check_connectivity()
+            .await
+            .to_err_string()?;
+
+        Ok(Connectivity::from(connectivity))
+    }
+
+    pub async fn await_for_connectivity(&self, expected: Connectivity) -> Result<()> {
+        let mut stream = self.nm_proxy.receive_connectivity_changed()
+            .await;
+
+        loop {
+            let connectivity = stream.next()
+                .await;
+
+            if let Some(flag_prop) = connectivity {
+                let flag = flag_prop.get()
+                    .await
+                    .to_err_string()?;
+
+                if Connectivity::from(flag) == expected {
+                    break
+                }
+            }
+        }
+        
+        Ok(())
     }
 }
 
